@@ -1,7 +1,9 @@
 <div class="min-h-screen bg-gray-100 p-6">
   <div class="max-w-4xl mx-auto">
     <!-- Header -->
-    <div class="mb-6 flex items-center gap-5 justify-between rounded-xl bg-gradient-to-r from-yellow-500 to-orange-600 p-6 text-white shadow-md">
+    <div
+      class="mb-6 flex items-center gap-5 justify-between rounded-xl bg-gradient-to-r from-yellow-500 to-orange-600 p-6 text-white shadow-md"
+    >
       <h1 class="xl:text-2xl font-bold lg:text-xl sm:text-lg">{{ title }}</h1>
       <p class="font-bold">{{ description }}</p>
     </div>
@@ -56,13 +58,14 @@
       </div>
     </section>
 
+    <!-- รายการ Task -->
     <section>
       <!-- การเพิ่ม Task -->
       <div class="bg-white p-6 rounded-xl shadow-md">
         <!-- ข้อความหัว -->
-         
+
         <h2 class="text-xl font-bold">Task Management</h2>
-        <p class="mt-5 mb-5">Crate and manage your dialy tasks.</p>
+        <p class="mt-5 mb-5">Crate and manage your daily tasks.</p>
 
         <!-- กล่องเพิ่ม Task -->
         <div>
@@ -77,10 +80,10 @@
           />
         </div>
         <!-- ปุ่มเพิ่ม Task -->
-        <button 
-        type="button"
-        (click)="addTask()"
-        class="mt-2 p-3 w-full font-bold rounded-xl shadow-md bg-blue-500 text-white hover:bg-blue-700"
+        <button
+          type="button"
+          (click)="addTask()"
+          class="mt-2 p-3 w-full font-bold rounded-xl shadow-md bg-blue-500 text-white hover:bg-blue-700"
         >
           + Add Task
         </button>
@@ -89,15 +92,83 @@
         <hr class="my-4 border-gray-300 mt-5 mb-8" />
 
         <!-- แสดง Task ที่เพิ่ม -->
-        <div >
+        <div>
           <h2 class="text-xl font-bold">My Tasks</h2>
+          <span class="flex justify-content ">
+            <p style="font-style: italic; font-weight: bold">งานทั้งหมด : {{ total }}</p>
+            <p style="margin-left: 1rem; font-style: italic; font-weight: bold">งานที่เสร็จ : {{ Completed }}</p>
+          </span>
           <ul>
-           @for (task of tasks; track task.id) {
-            <li class="mt-3 mb-3 bg-gray-900 px-1 py-1 text-center rounded-md font-semibold text-white">{{ task.title }}</li>
-           } @empty {
-          <p class="mt-5 mb-5">No tasks yet.Add your first task!</p>
-          }
-        </ul>
+            @for (task of tasks; track task.id) {
+              <li
+                class="flex justify-between items-center gap-3 mt-3 bg-gray-900 px-4 py-3 rounded-md font-semibold text-white"
+              >
+                @if (editingTaskId === task.id) {
+                  <!-- โหมดแก้ไข -->
+                  <input
+                    type="text"
+                    [(ngModel)]="editTaskName"
+                    class="min-w-0 flex-1 bg-white text-black border rounded px-3 py-2"
+                  />
+
+                  <div class="flex gap-2">
+                    <button
+                      type="button"
+                      (click)="saveEdit()"
+                      class="bg-green-500 hover:bg-green-600 px-3 py-2 rounded"
+                    >
+                      บันทึก
+                    </button>
+
+                    <button
+                      type="button"
+                      (click)="cancelEdit()"
+                      class="bg-gray-500 hover:bg-gray-600 px-3 py-2 rounded"
+                    >
+                      ยกเลิก
+                    </button>
+                  </div>
+                } @else {
+                  <!-- โหมดแสดงผลปกติ -->
+                  <div class="flex items-center gap-3 min-w-0">
+                    <input
+                      type="checkbox"
+                      [checked]="task.completed"
+                      (change)="toggleComplete(task.id)"
+                      class="w-5 h-5 accent-green-500 cursor-pointer"
+                    />
+
+                    <span
+                      class="min-w-0 break-words"
+                      [class.line-through]="task.completed"
+                      [class.text-gray-400]="task.completed"
+                    >
+                      {{ task.title }}
+                    </span>
+                  </div>
+
+                  <div class="flex gap-2">
+                    <button
+                      type="button"
+                      (click)="startEdit(task.id)"
+                      class="bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded"
+                    >
+                      📝 แก้ไข
+                    </button>
+
+                    <button 
+                    type="button" 
+                    (click)="deleteTask(task.id)"
+                    class="bg-red-500 hover:bg-red-600 px-3 py-2 rounded">
+                      🗑️ ลบ
+                    </button>
+                  </div>
+                }
+              </li>
+            } @empty {
+              <li class="mt-5 text-gray-500">No tasks yet. Add your first task!</li>
+            }
+          </ul>
         </div>
       </div>
     </section>
